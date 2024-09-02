@@ -1,47 +1,38 @@
-name: newenv
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - bowtie2=2.5.4
-  - bzip2=1.0.8
-  - c-ares=1.33.1
-  - ca-certificates=2024.8.30
-  - krb5=1.21.3
-  - libblas=3.9.0
-  - libcblas=3.9.0
-  - libcurl=8.9.1
-  - libcxx=18.1.8
-  - libedit=3.1.20191231
-  - libev=4.33
-  - libffi=3.4.2
-  - libgfortran=4.0.0  # Update this version
-  - liblapack=3.9.0
-  - libnghttp2=1.58.0
-  - libopenblas=0.3.27
-  - libsqlite=3.46.0
-  - libssh2=1.11.0
-  - libzlib=1.3.1
-  - llvm-openmp=18.1.8
-  - ncurses=6.5
-  - numpy=1.24.4
-  - openjdk=22.0.1
-  - openssl=3.3.1
-  - pandas=2.0.3
-  - perl=5.32.1
-  - pip=24.2
-  - python=3.8.19
-  - python-dateutil=2.9.0
-  - python-tzdata=2024.1
-  - python_abi=3.8
-  - pytz=2024.1
-  - readline=8.2
-  - setuptools=72.2.0
-  - six=1.16.0
-  - tk=8.6.13
-  - trimmomatic=0.39
-  - wheel=0.44.0
-  - xz=5.2.6
-  - zstd=1.5.6
-prefix: /opt/conda/envs/newenv
+# Use an Ubuntu base image with Python 3.8
+FROM ubuntu:20.04
+
+# Set environment variables to avoid interactive prompts during build
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    bzip2 \
+    ca-certificates \
+    && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
+    && rm Miniconda3-latest-Linux-x86_64.sh \
+    && /opt/conda/bin/conda clean --all --yes \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PATH=/opt/conda/bin:$PATH
+ENV CONDA_ENV_PATH=/opt/conda/envs/newenv
+
+# Create and activate the Conda environment
+COPY environment.yml .
+RUN conda env create -f environment.yml
+
+# Install pip dependencies (if any)
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the rest of the application code
+COPY . .
+
+# Set the entry point for the container
+ENTRYPOINT ["conda", "run", "--name", "newenv", "python", "kraken_and_abundanceplots.py"]
