@@ -1,4 +1,5 @@
 # Use an Ubuntu base image with Python 3.8
+# Use an Ubuntu base image with Python 3.8
 FROM ubuntu:20.04
 
 # Set environment variables to avoid interactive prompts during build
@@ -12,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
     && rm Miniconda3-latest-Linux-x86_64.sh \
-    && /opt/conda/bin/conda clean -tipsy \
+    && /opt/conda/bin/conda clean --all --yes \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
