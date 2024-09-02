@@ -1,14 +1,20 @@
-# Use a base image with Python 3.8
-FROM python:3.8-slim
+# Use an Ubuntu base image with Python 3.8
+FROM ubuntu:20.04
 
-# Install Miniconda
+# Set environment variables to avoid interactive prompts during build
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     bzip2 \
+    ca-certificates \
     && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
     && bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
     && rm Miniconda3-latest-Linux-x86_64.sh \
-    && /opt/conda/bin/conda clean -tipsy
+    && /opt/conda/bin/conda clean -tipsy \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set environment variables
 ENV PATH=/opt/conda/bin:$PATH
