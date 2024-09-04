@@ -29,7 +29,7 @@ RUN conda env create -f environment.yml
 
 # Install pip dependencies (if any)
 COPY requirements.txt .
-RUN conda run -n newenv pip install -r requirements.txt
+RUN /opt/conda/bin/conda run -n newenv pip install -r requirements.txt
 
 # Set the working directory
 WORKDIR /app
@@ -38,4 +38,4 @@ WORKDIR /app
 COPY . .
 
 # Set the entry point for the container
-ENTRYPOINT ["conda", "run", "--name", "newenv", "python", "kraken_and_abundanceplots.py"]
+ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "kraken_and_abundanceplots.py"]
