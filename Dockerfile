@@ -38,4 +38,4 @@ WORKDIR /app
 COPY . .
 
 # Set the entry point for the container
-ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "kraken_and_abundanceplots.py"]
+ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "run_kr_abundance"]
