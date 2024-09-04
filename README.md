@@ -1,4 +1,4 @@
-# kraken_and_abundanceplots.py is used to perform taxonomic classification using Kraken and visualize viral and bacterial abundances according to information available in the provided metadata. This pipeline assumes the first column in the metadata corresponds to the sample IDs
+# run_kr_abundance is used to perform taxonomic classification using Kraken and visualize viral and bacterial abundances according to information available in the provided metadata. This pipeline assumes the first column in the metadata corresponds to the sample IDs
 
 run_kr_abundance --input_dir /home/harouna/ARSNACAdata/bamfiles/mypipeline --output_dir kraken_summary_files --kraken_db /home/harouna/Mydatabses/Standard --bowtie2_index /home/harouna/240405_VH01476_5_AAC3HYYHV_batch2/GRCh38_noalt_as --metadata_file /home/harouna/ARSNACAdata/bamfiles/METADATAARSNACAB.09.07.2024.csv --threads 8 --virus --read_count 10 --top_N 100
 
