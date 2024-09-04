@@ -9,12 +9,15 @@ RUN apt-get update && apt-get install -y \
     wget \
     bzip2 \
     ca-certificates \
-    && wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
-    && rm Miniconda3-latest-Linux-x86_64.sh \
-    && /opt/conda/bin/conda clean --all --yes \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Check if Conda is already installed, and install it if not
+RUN if ! command -v conda >/dev/null 2>&1; then \
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+        bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda && \
+        rm Miniconda3-latest-Linux-x86_64.sh; \
+    fi
 
 # Set environment variables
 ENV PATH=/opt/conda/bin:$PATH
@@ -26,7 +29,7 @@ RUN conda env create -f environment.yml
 
 # Install pip dependencies (if any)
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN conda run -n newenv pip install -r requirements.txt
 
 # Set the working directory
 WORKDIR /app
