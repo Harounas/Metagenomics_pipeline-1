@@ -16,6 +16,7 @@ dependencies:
   - libedit=3.1.20191231
   - libev=4.33
   - libffi=3.4.2
+  - kraken2
   #- libgfortran=4.0.0  # Update this version
   - liblapack=3.9.0
   - libnghttp2=1.58.0
