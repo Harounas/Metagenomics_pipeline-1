@@ -8,6 +8,9 @@ from .trimmomatic import run_trimmomatic
 from .bowtie2 import run_bowtie2
 from .kraken2 import run_kraken2
 
+# Ensure Kaleido is used for static image export
+pio.kaleido.scope.default_format = "png"
+
 def process_sample(forward, reverse, base_name, bowtie2_index, kraken_db, output_dir, threads, run_bowtie, use_precomputed_reports):
     if not use_precomputed_reports:
         # Step 1: Run Trimmomatic (only if not using precomputed reports)
@@ -28,6 +31,7 @@ def process_sample(forward, reverse, base_name, bowtie2_index, kraken_db, output
             raise FileNotFoundError(f"Precomputed Kraken2 report not found: {kraken_report}")
 
     return kraken_report
+
 def aggregate_kraken_results(kraken_dir, metadata_file, read_count):
     metadata = pd.read_csv(metadata_file, sep=",")
     sample_id_col = metadata.columns[0]  # Assume the first column is the sample ID
@@ -141,6 +145,7 @@ def generate_abundance_plots(merged_tsv_path, top_N):
                 height=plot_height
             )
 
-            fig.write_image(f"{plot_title}_Abundance_by_{col}.png", format='png', scale=3)
-            #pio.write_image(fig, f"{plot_title}_Abundance_by_{col}.png", scale=3)
+            output_path = f"{plot_title}_Abundance_by_{col}.png"
+            fig.write_image(output_path, format='png', scale=3)
 
+            print(f"Figure saved as {output_path}")
