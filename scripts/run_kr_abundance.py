@@ -1,13 +1,9 @@
-#import sys
-#sys.path.append('/home/harouna/ARSNACAdata/bamfiles/mypipeline/Metagenomics_pipeline/')
 import sys
 import os
 import argparse
 import glob
-sys.path.append(os.getcwd())
+import pandas as pd
 from Metagenomics_pipeline.kraken_abundance_pipeline import process_sample, aggregate_kraken_results, generate_abundance_plots
-
-
 
 def main():
     parser = argparse.ArgumentParser(description="Pipeline for Trimmomatic trimming, Bowtie2 host depletion (optional), and Kraken2 taxonomic classification.")
@@ -29,21 +25,31 @@ def main():
 
     run_bowtie = not args.no_bowtie2 and args.bowtie2_index is not None
 
+    # Step 1: Process each sample
     for forward in glob.glob(os.path.join(args.input_dir, "*_R1.fastq*")):
         base_name = os.path.basename(forward).replace("_R1.fastq.gz", "").replace("_R1.fastq", "")
- 
         reverse = os.path.join(args.input_dir, f"{base_name}_R2.fastq.gz") if forward.endswith(".gz") else os.path.join(args.input_dir, f"{base_name}_R2.fastq")
         
         if not os.path.isfile(reverse):
             reverse = None
 
-        process_sample(forward, reverse, base_name, args.bowtie2_index, args.kraken_db, args.output_dir, args.threads, run_bowtie,args.use_precomputed_reports)
+        # Process each sample and run Trimmomatic, Bowtie2, Kraken2
+        process_sample(forward, reverse, base_name, args.bowtie2_index, args.kraken_db, args.output_dir, args.threads, run_bowtie, args.use_precomputed_reports)
 
     # Step 2: Aggregate Kraken results
     merged_tsv_path = aggregate_kraken_results(args.output_dir, args.metadata_file, args.read_count)
+    print(f"Aggregated Kraken results saved to: {merged_tsv_path}")
 
     # Step 3: Generate both viral and bacterial abundance plots
-    generate_abundance_plots(merged_tsv_path, args.top_N)
+    df = pd.read_csv(merged_tsv_path, sep="\t")
+    print("Preview of aggregated Kraken results:")
+    print(df.head())  # Preview the data before plotting
+
+    # Step 4: Generate plots based on user input
+    if args.bacteria or args.virus:
+        generate_abundance_plots(merged_tsv_path, args.top_N)
+    else:
+        print("No --bacteria or --virus flag provided. No plots will be generated.")
 
 if __name__ == "__main__":
     main()
