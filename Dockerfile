@@ -42,6 +42,6 @@ COPY . .
 #ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
 
 # Set the entry point with PYTHONPATH set
-ENTRYPOINT ["sh", "-c", "PYTHONPATH=/app /opt/conda/bin/conda run --name newenv python scripts/run_kr_abundance.py"]
+ENTRYPOINT ["/opt/conda/bin/conda", "run", "--no-capture-output", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
 
 
