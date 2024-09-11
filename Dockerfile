@@ -43,5 +43,8 @@ COPY . .
 
 # Set the entry point for the container
 ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
-CMD ["$@"]
+
+# Allow passing arguments with CMD
+CMD ["--help"]
+
 
