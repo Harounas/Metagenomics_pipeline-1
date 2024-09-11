@@ -41,7 +41,9 @@ COPY . .
 # Set the entry point for the container
 #ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
 
-# Set the entry point with PYTHONPATH set
-ENTRYPOINT ["/opt/conda/bin/conda", "run", "--no-capture-output", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
+# Set the entry point for the container
+ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
 
+# Use CMD to allow passing arguments at runtime
+CMD ["--help"]
 
