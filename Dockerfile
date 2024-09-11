@@ -33,7 +33,7 @@ RUN /opt/conda/bin/conda run -n newenv pip install -r requirements.txt
 
 # Set the working directory
 WORKDIR /app
-RUN ls -R /app
+
 
 # Copy the rest of the application code
 COPY . .
