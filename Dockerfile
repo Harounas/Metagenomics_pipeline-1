@@ -33,9 +33,15 @@ RUN /opt/conda/bin/conda run -n newenv pip install -r requirements.txt
 
 # Set the working directory
 WORKDIR /app
+RUN ls -R /app
 
 # Copy the rest of the application code
 COPY . .
 
 # Set the entry point for the container
-ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
+#ENTRYPOINT ["/opt/conda/bin/conda", "run", "--name", "newenv", "python", "scripts/run_kr_abundance.py"]
+
+# Set the entry point with PYTHONPATH set
+ENTRYPOINT ["sh", "-c", "PYTHONPATH=/app /opt/conda/bin/conda run --name newenv python scripts/run_kr_abundance.py"]
+
+
